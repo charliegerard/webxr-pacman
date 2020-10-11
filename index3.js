@@ -1,4 +1,4 @@
-import * as THREE from "./node_modules/three/src/Three.js";
+import * as THREE from "./three.module.js";
 import { ARButton } from "./ARButton.js";
 import { LEVEL } from "./utils/level.js";
 var container;

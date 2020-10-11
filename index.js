@@ -1,4 +1,4 @@
-import * as THREE from "./three.module.js";
+import * as THREE from "https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.module.min.js";
 import { ARButton } from "./ARButton.js";
 import { LEVEL } from "./utils/level.js";
 var container;
@@ -30,8 +30,6 @@ var levelStartSound;
 let pacman;
 let map;
 let gameStarted = false;
-
-var raycaster = new THREE.Raycaster();
 var deathSound;
 var tempMatrix = new THREE.Matrix4();
 var killSound;
@@ -105,24 +103,6 @@ function init() {
         moveBack = true;
       }
     }
-    // // }
-    // var orientation =
-    //   (screen.orientation || {}).type ||
-    //   screen.mozOrientation ||
-    //   screen.msOrientation;
-
-    // if (orientation === "landscape-primary") {
-    //   console.log("That looks good.");
-    // } else if (orientation === "landscape-secondary") {
-    //   console.log("Mmmh... the screen is upside down!");
-    // } else if (
-    //   orientation === "portrait-secondary" ||
-    //   orientation === "portrait-primary"
-    // ) {
-    //   console.log("Mmmh... you should rotate your device to landscape");
-    // } else if (orientation === undefined) {
-    //   console.log("The orientation API isn't supported in this browser :(");
-    // }
 
     if (!gameStarted) {
       map = createMap(scene, LEVEL);
@@ -136,15 +116,6 @@ function init() {
     moveRight = false;
     moveFront = false;
     moveBack = false;
-  }
-
-  function getIntersections(controller) {
-    tempMatrix.identity().extractRotation(controller.matrixWorld);
-
-    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-    raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
-
-    return raycaster.intersectObjects(group.children);
   }
 
   controller = renderer.xr.getController(0);
@@ -218,9 +189,9 @@ function createMap(scene, levelDefinition) {
   }
 
   group.position.setFromMatrixPosition(reticle.matrix);
-  // test
+
   group.position.x = -0.5;
-  //
+
   group.rotation.set(-Math.PI / 2, 0, 0);
   group.scale.set(
     reticle.scale.x * 0.03,
@@ -475,9 +446,6 @@ var removeAt = function (map, scene, position) {
   var x = Math.round(position.x),
     y = Math.round(position.y);
   if (map[y] && map[y][x]) {
-    /*scene.remove(map[y][x]);
-            delete map[y][x];*/
-
     // Don't actually remove, just make invisible.
     map[y][x].visible = false;
   }
@@ -696,7 +664,6 @@ var moveGhost = function (ghost, delta) {
 
 var distance = function (object1, object2) {
   var difference = new THREE.Vector3();
-
   // Calculate difference between objects' positions.
   difference.copy(object1.position).sub(object2.position);
 

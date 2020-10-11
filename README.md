@@ -1,6 +1,6 @@
-# WebXR Pacman
+# WebXR Pac-Man
 
-Prototype of Pacman game in WebXR (mixed reality). Built using Three.js.
+Prototype of Pac-Man game in WebXR (mixed reality). Built using Three.js.
 
 [Live demo](https://webxr-pacman.netlify.app)
 

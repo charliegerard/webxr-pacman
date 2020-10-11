@@ -2,6 +2,8 @@
 
 Prototype of Pacman game in WebXR (mixed reality). Built using Three.js.
 
+[Live demo](https://webxr-pacman.netlify.app)
+
 Place the game on any flat horizontal surface. You can then move around the game in 3D (move closer/further, rotate around the game).
 
 ## Demo

@@ -1,0 +1,76 @@
+body {
+  background: rgb(8, 20, 42);
+  margin: 1em 0;
+}
+
+@media (max-width: 600px) {
+  img {
+    display: block;
+    width: 80%;
+    margin: 1rem auto;
+  }
+  .desktop-message {
+    display: none;
+  }
+
+  p {
+    widht: 80%;
+    display: block;
+    text-align: center;
+    margin: 1em auto;
+    line-height: 1.5em;
+    color: white;
+    font-family: monospace;
+    font-size: 1.2em;
+  }
+}
+
+@media (min-width: 600px) {
+  img {
+    width: 30%;
+    display: block;
+    margin: 1rem auto;
+  }
+  .mobile-message {
+    display: none;
+  }
+
+  p {
+    widht: 80%;
+    display: block;
+    text-align: center;
+    margin: 1em auto;
+    color: white;
+    font-family: monospace;
+    font-size: 1.5em;
+  }
+}
+
+h1 {
+  color: yellow;
+  text-align: center;
+  /* font-family: "Helvetica"; */
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 3rem;
+}
+.game {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+}
+
+footer {
+  color: white;
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  padding: 1em 0;
+  font-family: monospace;
+}
+
+footer a {
+  color: white;
+}

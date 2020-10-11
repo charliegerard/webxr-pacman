@@ -11,7 +11,7 @@
 
   img {
     display: block;
-    width: 80%;
+    width: 90%;
     margin: 1rem auto;
   }
   .desktop-message {
@@ -49,6 +49,7 @@
     margin: 0;
   }
   img {
+    width: 80%;
     display: block;
     margin: 0 auto 1em auto;
   }

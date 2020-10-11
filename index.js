@@ -76,7 +76,6 @@ function init() {
 
   levelStartSound = new Audio("./pacman_beginning.mp3");
   levelStartSound.preload = "auto";
-  // Play the level start sound as soon as the game starts.
   levelStartSound.autoplay = true;
 
   deathSound = new Audio("./pacman_death.mp3");
@@ -189,9 +188,7 @@ function createMap(scene, levelDefinition) {
   }
 
   group.position.setFromMatrixPosition(reticle.matrix);
-
   group.position.x = -0.5;
-
   group.rotation.set(-Math.PI / 2, 0, 0);
   group.scale.set(
     reticle.scale.x * 0.03,
@@ -241,8 +238,6 @@ function createPowerPellet() {
 }
 
 function createPacMan(scene, position) {
-  // Create spheres with decreasingly small horizontal sweeps, in order
-  // to create pacman "death" animation.
   var pacmanGeometries = [];
   var numFrames = 40;
   var offset;
@@ -273,8 +268,6 @@ function createPacMan(scene, position) {
   pacman.isWrapper = true;
   pacman.atePellet = false;
   pacman.distanceMoved = 0;
-
-  // Initialize pacman facing to the left.
   pacman.position.copy(position);
   pacman.direction = new THREE.Vector3(-1, 0, 0);
 
@@ -283,16 +276,12 @@ function createPacMan(scene, position) {
 
 function createGhost(scene, position) {
   var ghostGeometry = new THREE.SphereGeometry(GHOST_RADIUS, 16, 16);
-
-  // Give each ghost it's own material so we can change the colors of individual ghosts.
   var ghostMaterial = new THREE.MeshPhongMaterial({ color: "red" });
   var ghost = new THREE.Mesh(ghostGeometry, ghostMaterial);
 
   ghost.isGhost = true;
   ghost.isWrapper = true;
   ghost.isAfraid = false;
-
-  // Ghosts start moving left.
   ghost.position.copy(position);
   ghost.direction = new THREE.Vector3(-1, 0, 0);
   return ghost;
@@ -306,14 +295,6 @@ function animate() {
   var now = window.performance.now();
   var animationDelta = (now - previousFrameTime) / 1000;
   previousFrameTime = now;
-
-  // requestAnimationFrame will not call the callback if the browser
-  // isn't visible, so if the browser has lost focus for a while the
-  // time since the last frame might be very large. This could cause
-  // strange behavior (such as objects teleporting through walls in
-  // one frame when they would normally move slowly toward the wall
-  // over several frames), so make sure that the delta is never too
-  // large.
   animationDelta = Math.min(animationDelta, 1 / 30);
 
   // Keep track of how many seconds of animation has passed.
@@ -365,9 +346,6 @@ function render(timestamp, frame) {
 }
 
 function movePacman(delta) {
-  // Update rotation based on direction so that mouth is always facing forward.
-  // The "mouth" part is on the side of the sphere, make it "look" up but
-  // set the up direction so that it points forward.
   pacman.up.copy(pacman.direction).applyAxisAngle(UP, -Math.PI / 2);
 
   if (moveLeft) {
@@ -452,41 +430,34 @@ var removeAt = function (map, scene, position) {
 };
 
 function updatePacman(delta, now) {
-  // Play chomp sound if player is moving.
   if (!won && !lost && (moveFront || moveBack || moveLeft || moveRight)) {
     chompSound.play();
   } else {
     chompSound.pause();
   }
 
-  // Move if we haven't died or won.
   if (!won && !lost) {
     if (pacman) {
       movePacman(delta);
     }
   }
 
-  // Check for win.
   if (!won && numDotsEaten === map.numDots) {
     won = true;
     wonTime = now;
   }
 
-  // Go to next level 4 seconds after winning.
   if (won && now - wonTime > 3) {
-    // Reset pacman position and direction.
     pacman.position.copy(map.pacmanSpawn);
     pacman.direction.copy(LEFT);
     pacman.distanceMoved = 0;
 
-    // Reset dots, power pellets, and ghosts.
     scene.children.forEach(function (object) {
       if (object.isDot === true || object.isPowerPellet === true)
         object.visible = true;
       if (object.isGhost === true) remove.push(object);
     });
 
-    // Increase speed.
     PACMAN_SPEED += 1;
     GHOST_SPEED += 1;
 
@@ -495,7 +466,6 @@ function updatePacman(delta, now) {
     numGhosts = 0;
   }
 
-  // Reset pacman 4 seconds after dying.
   if (lives > 0 && lost && now - lostTime > 4) {
     lost = false;
     pacman.position.copy(map.pacmanSpawn);
@@ -503,9 +473,7 @@ function updatePacman(delta, now) {
     pacman.distanceMoved = 0;
   }
 
-  // Animate model
   if (lost) {
-    // If pacman got eaten, show dying animation.
     var angle = ((now - lostTime) * Math.PI) / 2;
     var frame = Math.min(
       pacman.frames.length - 1,
@@ -514,7 +482,6 @@ function updatePacman(delta, now) {
 
     pacman.geometry = pacman.frames[frame];
   } else {
-    // Otherwise, show eating animation based on how much pacman has moved.
     var maxAngle = Math.PI / 4;
     var angle = (pacman.distanceMoved * 2) % (maxAngle * 2);
     if (angle > maxAngle) angle = maxAngle * 2 - angle;
@@ -538,8 +505,6 @@ function update(delta, now) {
     }
   });
 
-  // Cannot remove items from scene.children while iterating
-  // through it, so remove them after the forEach loop.
   remove.forEach(scene.remove, scene);
   for (item in remove) {
     if (remove.hasOwnProperty(item)) {
@@ -548,7 +513,6 @@ function update(delta, now) {
     }
   }
 
-  // Spawn a ghost every 8 seconds, up to 4 ghosts.
   if (numGhosts < 4 && now - ghostSpawnTime > 8) {
     createGhost(scene, map.ghostSpawn);
     numGhosts += 1;
@@ -557,31 +521,25 @@ function update(delta, now) {
 }
 
 var updateGhost = function (ghost, delta, now) {
-  // Make all ghosts afraid if Pacman just ate a pellet.
   if (pacman.atePellet === true) {
     ghost.isAfraid = true;
     ghost.becameAfraidTime = now;
-
     ghost.material.color.setStyle("white");
   }
 
-  // Make ghosts not afraid anymore after 10 seconds.
   if (ghost.isAfraid && now - ghost.becameAfraidTime > 10) {
     ghost.isAfraid = false;
-
     ghost.material.color.setStyle("red");
   }
 
   moveGhost(ghost, delta);
 
-  // Check for collision between Pacman and ghost.
   if (!lost && !won && distance(pacman, ghost) < PACMAN_RADIUS + GHOST_RADIUS) {
     if (ghost.isAfraid === true) {
       remove.push(ghost);
       numGhosts -= 1;
       killSound.play();
     } else {
-      // lives -= 1;
       lost = true;
       lostTime = now;
       deathSound.play();
@@ -664,13 +622,11 @@ var moveGhost = function (ghost, delta) {
 
 var distance = function (object1, object2) {
   var difference = new THREE.Vector3();
-  // Calculate difference between objects' positions.
   difference.copy(object1.position).sub(object2.position);
 
   return difference.length();
 };
 
-// Make object wrap to other side of map if it goes out of bounds.
 var wrapObject = function (object, map) {
   if (object.position.x < map.left) object.position.x = map.right;
   else if (object.position.x > map.right) object.position.x = map.left;
